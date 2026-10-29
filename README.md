@@ -1,6 +1,7 @@
 # ML Assignment 2 – Classification Models with Streamlit
 
 **M.Tech (AIML) – Machine Learning | BITS Pilani WILP**
+**Submitted by:** Haritha Malasani | **BITS ID:** 2026AK05008
 
 ---
 
