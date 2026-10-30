@@ -100,7 +100,7 @@ with left:
     st.subheader("Confusion matrix")
     cm = confusion_matrix(y, y_pred, labels=[0, 1])
     fig, ax = plt.subplots(figsize=(4, 3.2))
-    sns.heatmap(cm, annot=True, fmt="d", cmap="Orange",
+    sns.heatmap(cm, annot=True, fmt="d", cmap="Oranges",
                 xticklabels=["Not accepted", "Accepted"],
                 yticklabels=["Not accepted", "Accepted"], ax=ax)
     ax.set_xlabel("Predicted")
