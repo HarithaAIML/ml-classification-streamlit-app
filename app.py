@@ -7,12 +7,12 @@ from sklearn.metrics import (accuracy_score, roc_auc_score, precision_score, rec
                              f1_score, matthews_corrcoef, confusion_matrix, classification_report)
 
 # ---------- Page setup ----------
-st.set_page_config(page_title="Coupon Acceptance Predictor", page_icon="☕", layout="wide")
+st.set_page_config(page_title="AFH Coupon Predictor", page_icon="☕", layout="wide")
 
-st.title("☕ Away-From-Home Coupon Acceptance Predictor")
+st.title("Will Consumer use this Coupon?")
 st.write(
     "Upload test data to see how five trained classification models predict whether "
-    "a consumer will accept a food or drink coupon (coffee house, takeaway, restaurant or bar)."
+    "a consumer will accept a coupon at coffee house, takeaway, restaurant or bar."
 )
 
 # ---------- Saved models (trained in model_training.ipynb) ----------
@@ -31,13 +31,13 @@ def load_model(path):
 
 
 # ---------- Sidebar: model selection ----------
-st.sidebar.header("Settings")
+st.sidebar.header("Model Options")
 model_name = st.sidebar.selectbox("Choose a model", list(MODEL_FILES.keys()), index=4)
 model = load_model(MODEL_FILES[model_name])
 
 # ---------- Sidebar: project info and sample data ----------
 st.sidebar.markdown("---")
-st.sidebar.subheader("About this app")
+st.sidebar.subheader("About this application")
 st.sidebar.write(
     "Dataset: UCI In-Vehicle Coupon Recommendation. "
     "Target Y: 1 = coupon accepted, 0 = not accepted."
@@ -55,7 +55,7 @@ except FileNotFoundError:
 uploaded = st.file_uploader("Upload test data (CSV)", type="csv")
 
 if uploaded is None:
-    st.info("Please upload a CSV file to begin (for example, test_data.csv from the GitHub repo).")
+    st.info("Please upload a data (CSV) file to begin (for example, test_data.csv from the GitHub repo).")
     st.stop()   # nothing more to show until a file is uploaded
 
 data = pd.read_csv(uploaded)
@@ -100,7 +100,7 @@ with left:
     st.subheader("Confusion matrix")
     cm = confusion_matrix(y, y_pred, labels=[0, 1])
     fig, ax = plt.subplots(figsize=(4, 3.2))
-    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues",
+    sns.heatmap(cm, annot=True, fmt="d", cmap="Orange",
                 xticklabels=["Not accepted", "Accepted"],
                 yticklabels=["Not accepted", "Accepted"], ax=ax)
     ax.set_xlabel("Predicted")
