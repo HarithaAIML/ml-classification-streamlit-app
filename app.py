@@ -1,6 +1,10 @@
 import streamlit as st
 import pandas as pd
 import joblib
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import (accuracy_score, roc_auc_score, precision_score, recall_score,
+                             f1_score, matthews_corrcoef, confusion_matrix, classification_report)
 
 # ---------- Page setup ----------
 st.set_page_config(page_title="Coupon Acceptance Predictor", page_icon="☕", layout="wide")
@@ -20,7 +24,6 @@ MODEL_FILES = {
     "Support Vector Machine": "model/svm.pkl",
 }
 TARGET = "Y"   # 1 = coupon accepted, 0 = not accepted
-
 
 @st.cache_resource   # load each model only once, not on every click
 def load_model(path):
@@ -56,3 +59,41 @@ if missing:
 X = data[feature_cols]   # input features (extra columns are ignored)
 y = data[TARGET]         # true answers, used to calculate metrics
 st.success(f"All required columns found. Ready to evaluate the {model_name} model.")
+
+# ---------- Predict using the saved model (no retraining) ----------
+y_pred = model.predict(X)
+y_prob = model.predict_proba(X)[:, 1]   # probability of "accepted", needed for AUC
+
+# AUC needs both classes (0 and 1) in the uploaded data
+auc = roc_auc_score(y, y_prob) if y.nunique() == 2 else None
+
+# ---------- Show the 6 evaluation metrics ----------
+st.subheader(f"Evaluation metrics – {model_name}")
+c1, c2, c3, c4, c5, c6 = st.columns(6)
+c1.metric("Accuracy", f"{accuracy_score(y, y_pred):.4f}")
+c2.metric("AUC", f"{auc:.4f}" if auc is not None else "N/A")
+c3.metric("Precision", f"{precision_score(y, y_pred, zero_division=0):.4f}")
+c4.metric("Recall", f"{recall_score(y, y_pred, zero_division=0):.4f}")
+c5.metric("F1 Score", f"{f1_score(y, y_pred, zero_division=0):.4f}")
+c6.metric("MCC", f"{matthews_corrcoef(y, y_pred):.4f}")
+
+# ---------- Confusion matrix and classification report side by side ----------
+left, right = st.columns(2)
+
+with left:
+    st.subheader("Confusion matrix")
+    cm = confusion_matrix(y, y_pred, labels=[0, 1])
+    fig, ax = plt.subplots(figsize=(4, 3.2))
+    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues",
+                xticklabels=["Not accepted", "Accepted"],
+                yticklabels=["Not accepted", "Accepted"], ax=ax)
+    ax.set_xlabel("Predicted")
+    ax.set_ylabel("Actual")
+    st.pyplot(fig)
+
+with right:
+    st.subheader("Classification report")
+    report = classification_report(y, y_pred, labels=[0, 1],
+                                   target_names=["Not accepted", "Accepted"],
+                                   output_dict=True, zero_division=0)
+    st.dataframe(pd.DataFrame(report).T.round(4))
