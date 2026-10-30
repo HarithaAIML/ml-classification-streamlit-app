@@ -58,16 +58,24 @@ This is a **binary classification** problem. Five machine learning models are tr
 | direction_opp | Binary | Outlet is in the opposite direction to the destination |
 | **Y (target)** | Binary | 1 = accepted the coupon, 0 = did not accept |
 
+**Class balance:** 7,210 accepted (56.8%) and 5,474 not accepted (43.2%), so the classes are fairly balanced.
+
 **Preprocessing steps:**
-- (to be added after preprocessing – missing values, encoding, scaling, train/test split)
+- Dropped `car` (about 99% missing), `toCoupon_GEQ5min` (same value in every row) and `direction_opp` (always the opposite of `direction_same`).
+- Removed 74 duplicate rows, leaving 12,610 rows and 22 features.
+- Split into 80% training (10,088 rows) and 20% test (2,522 rows), stratified on `Y` so both sets keep the same class balance. The test set is saved as `test_data.csv`.
+- Built a preprocessing pipeline, fitted on the training data only:
+  - Categorical columns (17): missing values filled with the most frequent value, then one-hot encoded.
+  - Numeric columns (5): standardised with `StandardScaler`.
+- Each model is saved together with this pipeline, so the Streamlit app can use the raw test CSV directly without retraining.
 
 ---
 
 ## c. GitHub Repository Link
 
-(to be added)
+https://github.com/HarithaAIML/ml-classification-streamlit-app
 
-**Live Streamlit App:** (to be added)
+**Live Streamlit App:** https://haritha-coupon-predictor.streamlit.app/
 
 **Repository structure:**
 
