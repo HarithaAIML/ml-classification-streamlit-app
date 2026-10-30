@@ -35,6 +35,22 @@ st.sidebar.header("Settings")
 model_name = st.sidebar.selectbox("Choose a model", list(MODEL_FILES.keys()), index=4)
 model = load_model(MODEL_FILES[model_name])
 
+# ---------- Sidebar: project info and sample data ----------
+st.sidebar.markdown("---")
+st.sidebar.subheader("About this app")
+st.sidebar.write(
+    "Dataset: UCI In-Vehicle Coupon Recommendation. "
+    "Target Y: 1 = coupon accepted, 0 = not accepted."
+)
+st.sidebar.write("Models were trained once in model_training.ipynb and are only loaded here (no retraining).")
+
+# Let users download the test file so they can try the app straight away
+try:
+    with open("test_data.csv", "rb") as f:
+        st.sidebar.download_button("⬇️ Download sample test data", f,
+                                   file_name="test_data.csv", mime="text/csv")
+except FileNotFoundError:
+    pass   # if the file is not in the repo, simply skip the button
 # ---------- Upload test data ----------
 uploaded = st.file_uploader("Upload test data (CSV)", type="csv")
 
@@ -97,3 +113,34 @@ with right:
                                    target_names=["Not accepted", "Accepted"],
                                    output_dict=True, zero_division=0)
     st.dataframe(pd.DataFrame(report).T.round(4))
+
+# ---------- Predictions table with download ----------
+st.subheader("Predictions")
+predictions = data.copy()
+predictions["Predicted"] = y_pred
+predictions["Probability_accept"] = y_prob.round(3)
+st.dataframe(predictions.head(20))
+st.download_button("⬇️ Download all predictions", predictions.to_csv(index=False),
+                   file_name="predictions.csv", mime="text/csv")
+
+# ---------- Compare all five models on the uploaded data ----------
+st.subheader("Compare all five models on this data")
+if st.button("Run comparison"):
+    rows = {}
+    for name, path in MODEL_FILES.items():
+        m = load_model(path)
+        p = m.predict(X)
+        prob = m.predict_proba(X)[:, 1]
+        rows[name] = {
+            "Accuracy": accuracy_score(y, p),
+            "AUC": roc_auc_score(y, prob) if y.nunique() == 2 else float("nan"),
+            "Precision": precision_score(y, p, zero_division=0),
+            "Recall": recall_score(y, p, zero_division=0),
+            "F1": f1_score(y, p, zero_division=0),
+            "MCC": matthews_corrcoef(y, p),
+        }
+    comparison = pd.DataFrame(rows).T.round(4)
+    st.dataframe(comparison)
+    st.bar_chart(comparison[["Accuracy", "AUC", "F1", "MCC"]])
+    best = comparison["MCC"].idxmax()
+    st.success(f"Best model on this data (by MCC): {best}")
