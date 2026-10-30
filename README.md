@@ -1,7 +1,6 @@
 # ML Assignment 2 – Classification Models with Streamlit
 
 **M.Tech (AIML) – Machine Learning | BITS Pilani WILP**
-**Submitted by:** Haritha Malasani | **BITS ID:** 2026AK05008
 
 ---
 
@@ -98,22 +97,22 @@ The following five classification models were trained on the same dataset:
 
 | ML Model Name | Accuracy | AUC | Precision | Recall | F1 | MCC |
 |---|---|---|---|---|---|---|
-| Logistic Regression | | | | | | |
-| Decision Tree | | | | | | |
-| KNN | | | | | | |
-| Naive Bayes | | | | | | |
-| Support Vector Machine | | | | | | |
+| Logistic Regression | 0.6808 | 0.7306 | 0.6984 | 0.7701 | 0.7325 | 0.3417 |
+| Decision Tree | 0.6959 | 0.7224 | 0.7078 | 0.7904 | 0.7468 | 0.3726 |
+| KNN | 0.6848 | 0.7404 | 0.6978 | 0.7841 | 0.7384 | 0.3490 |
+| Naive Bayes | 0.6277 | 0.6678 | 0.6892 | 0.6261 | 0.6562 | 0.2536 |
+| Support Vector Machine | **0.7411** | **0.8064** | **0.7462** | **0.8239** | **0.7831** | **0.4674** |
 
 ### Observations on Model Performance
 
 | ML Model Name | Observation about model performance |
 |---|---|
-| Logistic Regression | (to be added) |
-| Decision Tree | (to be added) |
-| KNN | (to be added) |
-| Naive Bayes | (to be added) |
-| Support Vector Machine | (to be added) |
-| **Overall, winner for this dataset?** | (to be added) |
+| Logistic Regression | Achieved 68.08% accuracy and an AUC of 0.7306, indicating moderate classification performance. Its recall of 77.01% is reasonably good, but its MCC of 0.3417 indicates moderate overall predictive agreement. |
+| Decision Tree | Achieved 69.59% accuracy, with a recall of 79.04% and an F1-score of 0.7468. It performs better than Logistic Regression in accuracy, recall, and MCC, but its AUC of 0.7224 is slightly lower. |
+| KNN | Achieved 68.48% accuracy and an AUC of 0.7404. Its recall of 78.41% is good, but its accuracy and F1-score are lower than those of the Decision Tree and SVM models. |
+| Naive Bayes | Achieved 62.77% accuracy and an AUC of 0.6678, the lowest among all five models. Its recall of 62.61% and F1-score of 0.6562 indicate comparatively weaker classification performance. |
+| Support Vector Machine | Achieved the highest accuracy (74.11%), AUC (0.8064), precision (74.62%), recall (82.39%), F1-score (0.7831), and MCC (0.4674). It demonstrates the best overall performance across all six evaluation metrics. |
+| **Overall, winner for this dataset?** | Support Vector Machine (SVM) is the best-performing model because it achieves the highest scores across all six metrics, indicating the strongest overall classification performance among the evaluated models. |
 
 ---
 
